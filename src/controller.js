@@ -31,7 +31,6 @@ export default function Controller(id, renderer) {
         material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
         return new THREE.Mesh( geometry, material );
     }
-    console.log("Set up controller")
   };
 
   controller.addEventListener("selectstart", onSelectStart)

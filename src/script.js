@@ -4,6 +4,7 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 import OpeningScene from "./scenes/opening";
 import {VRButton} from "three/examples/jsm/webxr/VRButton";
+import Controllers from "./controllers";
 
 const hasWebXR = async () => {
   if (!navigator.xr) {
@@ -23,8 +24,10 @@ hasWebXR().then((hasXR) => {
   const renderer = new THREE.WebGLRenderer( { antialias: true } );
   const openingScene = OpeningScene(renderer, hasXR, () => {
     const appContainer = document.getElementById("app");
-
     appContainer.appendChild(renderer.domElement);
+    const controllers = new Controllers(renderer);
+    openingScene.add(controllers.leftController.controller);
+    openingScene.add(controllers.rightController.controller);
 
     const panel = document.querySelector('.panel');
     panel.appendChild(VRButton.createButton(renderer))

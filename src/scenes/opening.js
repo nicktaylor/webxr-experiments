@@ -49,11 +49,8 @@ export default function OpeningScene(renderer, hasXR, onReady) {
 
   const createCamera = () => {
     camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
-    camera.position.x = 0
-    camera.position.y = 0
-    camera.position.z = 5
+    camera.position.set(0, 0, 5)
     if (!hasXR) {
-      console.log("Adding camera")
       scene.add(camera)
     }
   }
@@ -65,6 +62,8 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   };
 
   const init = async () => {
+    createCamera();
+
     await Promise.all([loadTextures(), loadFonts()]);
 
     const textGeometry = new THREE.TextGeometry(
@@ -114,7 +113,6 @@ export default function OpeningScene(renderer, hasXR, onReady) {
       add(donut);
     }
 
-    createCamera();
 
     if (!hasXR) {
       controls = new OrbitControls(camera, renderer.domElement)
