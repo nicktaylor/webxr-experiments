@@ -48,11 +48,9 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   }
 
   const createCamera = () => {
-    camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10);
     camera.position.set(0, 0, 5)
-    if (!hasXR) {
-      scene.add(camera)
-    }
+    scene.add(camera)
   }
 
   const onWindowResize = () => {
@@ -123,6 +121,11 @@ export default function OpeningScene(renderer, hasXR, onReady) {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    var user = new THREE.Group();
+    user.position.set( 0, 0, 5 );
+    scene.add( user );
+    user.add( camera );
 
     window.addEventListener('resize', onWindowResize);
   };
