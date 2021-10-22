@@ -26,8 +26,10 @@ hasWebXR().then((hasXR) => {
     const appContainer = document.getElementById("app");
     appContainer.appendChild(renderer.domElement);
     const controllers = new Controllers(renderer);
-    openingScene.add(controllers.leftController.controller);
-    openingScene.add(controllers.rightController.controller);
+    openingScene.user.add(controllers.leftController.controller);
+    openingScene.user.add(controllers.leftController.grip);
+    openingScene.user.add(controllers.rightController.controller);
+    openingScene.user.add(controllers.rightController.grip);
 
     const panel = document.querySelector('.panel');
     panel.appendChild(VRButton.createButton(renderer))

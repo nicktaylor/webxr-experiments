@@ -3,12 +3,13 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 
 export default function OpeningScene(renderer, hasXR, onReady) {
   const scene = new THREE.Scene();
+  const user = new THREE.Group();
   const donuts = [];
+
+  let vrControls = null;
 
   let textures = {};
   let fonts = {};
-  let text = null;
-  let sceneEnded = false;
   let camera = null;
   let controls = null;
 
@@ -48,11 +49,15 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   }
 
   const createCamera = () => {
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10);
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 40);
     camera.position.set(0, 0, 5)
-    scene.add(camera)
+    controls = new OrbitControls(camera, renderer.domElement)
+    renderer.xr.updateCamera(camera);
+    if (!hasXR) {
+      scene.add(camera)
+    }
+    user.add(camera)
   }
-
   const onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -112,31 +117,21 @@ export default function OpeningScene(renderer, hasXR, onReady) {
     }
 
 
-    if (!hasXR) {
-      controls = new OrbitControls(camera, renderer.domElement)
-      controls.enableDamping = true
-    } else {
-      renderer.xr.enabled = true;
-    }
+
+    renderer.xr.enabled = true;
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    var user = new THREE.Group();
-    user.position.set( 0, 0, 5 );
-    scene.add( user );
-    user.add( camera );
-
+    user.position.set(0, 0, 5);
+    scene.add(user);
     window.addEventListener('resize', onWindowResize);
   };
 
 
   const render = () => {
     renderer.render(scene, camera);
-    console.log("RENDERING")
-    if (!hasXR) {
-      controls.update();
-    }
+    controls.update();
   }
 
   const run = () => {
@@ -159,6 +154,7 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   return {
     add,
     scene,
-    run
+    run,
+    user
   }
 }
