@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
+import {FontLoader} from "three/examples/jsm/loaders/FontLoader.js"
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry.js"
 
 export default function OpeningScene(renderer, hasXR, onReady) {
   const scene = new THREE.Scene();
@@ -20,7 +22,7 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   };
 
   const loadFont = (name, src) => {
-    const fontLoader = new THREE.FontLoader();
+    const fontLoader = new FontLoader();
 
     return new Promise((resolve, reject) => {
       fontLoader.load(
@@ -69,7 +71,7 @@ export default function OpeningScene(renderer, hasXR, onReady) {
 
     await Promise.all([loadTextures(), loadFonts()]);
 
-    const textGeometry = new THREE.TextGeometry(
+    const textGeometry = new TextGeometry(
         "Hello, world!",
         {
           font: fonts["wotfard"],
@@ -112,7 +114,11 @@ export default function OpeningScene(renderer, hasXR, onReady) {
       const scale = Math.random();
       donut.scale.set(scale, scale, scale);
 
-      donuts.push(donut);
+      donuts.push({
+        donut,
+        increaseX: donut.rotation.z / 5,
+        increaseZ: donut.rotation.z / 5
+      });
       add(donut);
     }
 
@@ -129,7 +135,14 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   };
 
 
+  const clock = new THREE.Clock();
+
   const render = () => {
+    const delta = clock.getDelta();
+    donuts.forEach((d, i) => {
+      d.donut.rotation.x += d.increaseX * delta;
+      d.donut.rotation.y += d.increaseX * delta;
+    })
     renderer.render(scene, camera);
     controls.update();
   }
@@ -137,9 +150,7 @@ export default function OpeningScene(renderer, hasXR, onReady) {
   const run = () => {
     return new Promise((resolve, reject) => {
       try {
-        console.log("HERER")
         renderer.setAnimationLoop(render);
-
         renderer.xr.addEventListener('sessionend', () => {
           resolve();
         });
